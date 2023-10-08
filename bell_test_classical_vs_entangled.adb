@@ -238,6 +238,68 @@ procedure bell_test_classical_vs_entangled is
     return rec;
   end simulate_event_series;
 
+  function measure_correlation_coefficient (rec : series_record)
+  return scalar is
+    freq_vhpp  : scalar;
+    freq_vhpm  : scalar;
+    freq_vhmp  : scalar;
+    freq_vhmm  : scalar;
+    freq_hvpp  : scalar;
+    freq_hvpm  : scalar;
+    freq_hvmp  : scalar;
+    freq_hvmm  : scalar;
+    cos2_cos2  : scalar;
+    cos2_sin2  : scalar;
+    sin2_cos2  : scalar;
+    sin2_sin2  : scalar;
+    cosφ1_sign : scalar;
+    sinφ1_sign : scalar;
+    cosφ2_sign : scalar;
+    sinφ2_sign : scalar;
+    cosφ1_φ2   : scalar;
+    sinφ1_φ2   : scalar;
+  begin
+    -- Compute frequencies of events;
+    freq_vhpp := scalar (rec.num_vhpp) / scalar (rec.num_ev);
+    freq_vhpm := scalar (rec.num_vhpm) / scalar (rec.num_ev);
+    freq_vhmp := scalar (rec.num_vhmp) / scalar (rec.num_ev);
+    freq_vhmm := scalar (rec.num_vhmm) / scalar (rec.num_ev);
+    freq_hvpp := scalar (rec.num_hvpp) / scalar (rec.num_ev);
+    freq_hvpm := scalar (rec.num_hvpm) / scalar (rec.num_ev);
+    freq_hvmp := scalar (rec.num_hvmp) / scalar (rec.num_ev);
+    freq_hvmm := scalar (rec.num_hvmm) / scalar (rec.num_ev);
+
+    -- Use these frequencies as estimates of products of squares of
+    -- trigonometric functions (as one can infer from the experimental
+    -- design).
+    cos2_cos2 := freq_vhmp + freq_hvpm; -- cos²(φ1)×cos²(φ2)
+    cos2_sin2 := freq_vhmm + freq_hvpp; -- cos²(φ1)×sin²(φ2)
+    sin2_cos2 := freq_vhpp + freq_hvmm; -- sin²(φ1)×cos²(φ2)
+    sin2_sin2 := freq_vhpm + freq_hvmp; -- sin²(φ1)×sin²(φ2)
+
+    -- Because those quantities are squares, and we will need their
+    -- square roots, there is a difficulty: there are two square roots
+    -- for each square. To know which square roots to use, one needs
+    -- to know which quadrants φ1 and φ2 are in. So let us figure out
+    -- now which square roots to use. (This problem does not occur if
+    -- all test angles are in Quadrant I, but in any case is not a
+    -- major difficulty.)
+    cosφ1_sign := (if cos (rec.φ1) < 0.0 then -1.0 else 1.0);
+    sinφ1_sign := (if sin (rec.φ1) < 0.0 then -1.0 else 1.0);
+    cosφ2_sign := (if cos (rec.φ2) < 0.0 then -1.0 else 1.0);
+    sinφ2_sign := (if sin (rec.φ2) < 0.0 then -1.0 else 1.0);
+
+    -- Use angle-difference identities to estimate cos(φ1-φ2) and
+    -- sin(φ1-φ2).
+    cosφ1_φ2 := (cosφ1_sign * cosφ2_sign * sqrt (cos2_cos2)) +
+                   (sinφ1_sign * sinφ2_sign * sqrt (sin2_sin2));
+    sinφ1_φ2 := (sinφ1_sign * cosφ2_sign * sqrt (sin2_cos2)) -
+                   (cosφ1_sign * sinφ2_sign * sqrt (cos2_sin2));
+
+    -- Return -(cos²(φ1-φ2)-sin²(φ1-φ2)) = -cos(2(φ1-φ2)).
+    return -((cosφ1_φ2 ** 2) - (sinφ1_φ2 ** 2));
+  end measure_correlation_coefficient;
+
 begin
   null;
 end bell_test_classical_vs_entangled;
