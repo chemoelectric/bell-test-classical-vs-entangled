@@ -30,7 +30,9 @@ pragma ada_2022;
 pragma wide_character_encoding (utf8);
 
 with ada.assertions;
+with ada.text_io;
 with ada.wide_wide_text_io;
+with ada.command_line;
 with ada.numerics;
 with ada.numerics.generic_elementary_functions;
 
@@ -42,7 +44,10 @@ procedure bell_test_classical_vs_entangled is
 
   use ada.assertions;
   use ada.wide_wide_text_io;
+  use ada.command_line;
   use ada.numerics;
+
+  package tio renames ada.text_io;
 
   package scalar_elementary_functions is
     new ada.numerics.generic_elementary_functions (scalar);
@@ -121,8 +126,8 @@ procedure bell_test_classical_vs_entangled is
            (if uniform_scalar < cos (φ) ** 2 then '⊕' else '⊖'));
   end split_beam;
 
-  function simulate_event_classically (φ1 : polarizing_beam_splitter;
-                                       φ2 : polarizing_beam_splitter)
+  function simulate_event_classical (φ1 : polarizing_beam_splitter;
+                                     φ2 : polarizing_beam_splitter)
   return event_record is
     ev : event_record;
   begin
@@ -133,7 +138,7 @@ procedure bell_test_classical_vs_entangled is
     ev.detections(1) := split_beam (φ1, ev.orientations(1));
     ev.detections(2) := split_beam (φ2, ev.orientations(2));
     return ev;
-  end simulate_event_classically;
+  end simulate_event_classical;
 
   function simulate_event_entangled (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
@@ -301,8 +306,35 @@ procedure bell_test_classical_vs_entangled is
     return -((cosφ1_φ2 ** 2) - (sinφ1_φ2 ** 2));
   end measure_correlation_coefficient;
 
+  φ1, φ2         : scalar;
+  num_ev         : positive;
+  rec_classical  : series_record;
+  rec_entangled  : series_record;
+  coef_classical : scalar;
+  coef_entangled : scalar;
+
 begin
-  null;
+  if argument_count /= 3 then
+    put ("Usage: ");
+    tio.put (command_name);
+    put (" φ1 φ2 number_of_events");
+    new_line;
+    set_exit_status (1);
+  else
+    φ1 := scalar'value (argument(1)) * (π / 180.0);
+    φ2 := scalar'value (argument(2)) * (π / 180.0);
+    num_ev := positive'value (argument(3));
+    rec_classical :=
+      simulate_event_series (simulate_event_classical'access,
+                             φ1, φ2, num_ev);
+    rec_entangled :=
+      simulate_event_series (simulate_event_entangled'access,
+                             φ1, φ2, num_ev);
+    coef_classical := measure_correlation_coefficient (rec_classical);
+    coef_entangled := measure_correlation_coefficient (rec_entangled);
+    put (coef_classical, 2, 5, 0); new_line;
+    put (coef_entangled, 2, 5, 0); new_line;
+  end if;
 end bell_test_classical_vs_entangled;
 
 ----------------------------------------------------------------------
