@@ -29,9 +29,8 @@
 pragma ada_2022;
 pragma wide_character_encoding (utf8);
 
+with ada.assertions;
 with ada.wide_wide_text_io;
-with ada.containers;
-with ada.containers.doubly_linked_lists;
 with ada.numerics;
 with ada.numerics.generic_elementary_functions;
 
@@ -41,8 +40,8 @@ procedure bell_test_classical_vs_entangled is
 
   type scalar is digits 15;
 
+  use ada.assertions;
   use ada.wide_wide_text_io;
-  use ada.containers;
   use ada.numerics;
 
   package scalar_elementary_functions is
@@ -96,8 +95,8 @@ procedure bell_test_classical_vs_entangled is
 
 ----------------------------------------------------------------------
 
-  type source_photon is ('⇕', '⇔');
-  type source_photon_pair is array (pair_range) of source_photon;
+  type orientation is ('⇕', '⇔');
+  type orientation_pair is array (pair_range) of orientation;
 
   subtype polarizing_beam_splitter is scalar;
 
@@ -106,21 +105,12 @@ procedure bell_test_classical_vs_entangled is
 
   type event_record is
     record
-      source_pair : source_photon_pair;
-      detections  : plus_minus_pair;
+      orientations : orientation_pair;
+      detections   : plus_minus_pair;
     end record;
 
-  function generate_photon_pair
-  return source_photon_pair is
-  begin
-    return (if uniform_scalar < 0.5 then
-              ('⇕', '⇔')
-            else
-              ('⇔', '⇕'));
-  end generate_photon_pair;
-
   function split_beam (φ : polarizing_beam_splitter;
-                       σ : source_photon)
+                       σ : orientation)
   return plus_minus is
   begin
     return
@@ -129,18 +119,124 @@ procedure bell_test_classical_vs_entangled is
            (if uniform_scalar < sin (φ) ** 2 then '⊕' else '⊖'),
          when '⇔' =>
            (if uniform_scalar < cos (φ) ** 2 then '⊕' else '⊖'));
-  end split_beam;  
+  end split_beam;
 
   function simulate_event_classically (φ1 : polarizing_beam_splitter;
                                        φ2 : polarizing_beam_splitter)
   return event_record is
     ev : event_record;
   begin
-    ev.source_pair := generate_photon_pair;
-    ev.detections(1) := split_beam (φ1, ev.source_pair(1));
-    ev.detections(2) := split_beam (φ2, ev.source_pair(2));
+    ev.orientations := (if uniform_scalar < 0.5 then
+                         ('⇕', '⇔')
+                       else
+                         ('⇔', '⇕'));
+    ev.detections(1) := split_beam (φ1, ev.orientations(1));
+    ev.detections(2) := split_beam (φ2, ev.orientations(2));
     return ev;
   end simulate_event_classically;
+
+  function simulate_event_entangled (φ1 : polarizing_beam_splitter;
+                                     φ2 : polarizing_beam_splitter)
+  return event_record is
+    ev : event_record;
+  begin
+    ev.orientations(1) := (if uniform_scalar < 0.5 then '⇕' else '⇔');
+    ev.detections(1) := split_beam (φ1, ev.orientations(1));
+    case ev.orientations(1) is
+      when '⇕' =>
+        ev.orientations(2) := '⇔';
+        ev.detections(2) :=
+          (if uniform_scalar < cos (φ2) ** 2 then '⊕' else '⊖');
+      when '⇔' =>
+        ev.orientations(2) := '⇕';
+        ev.detections(2) :=
+          (if uniform_scalar < sin (φ2) ** 2 then '⊕' else '⊖');
+    end case;
+    return ev;
+  end simulate_event_entangled;
+
+  type event_simulation is
+    access function (φ1 : polarizing_beam_splitter;
+                     φ2 : polarizing_beam_splitter)
+           return event_record;
+
+  type series_record is
+    record
+      φ1       : polarizing_beam_splitter;
+      φ2       : polarizing_beam_splitter;
+      num_ev   : positive;
+      num_vhpp : natural;       -- vertical, horizontal, plus, minus
+      num_vhpm : natural;
+      num_vhmp : natural;
+      num_vhmm : natural;
+      num_hvpp : natural;
+      num_hvpm : natural;
+      num_hvmp : natural;
+      num_hvmm : natural;
+    end record;
+
+  function simulate_event_series (ev_sim : event_simulation;
+                                  φ1     : polarizing_beam_splitter;
+                                  φ2     : polarizing_beam_splitter;
+                                  num_ev : positive)
+  return series_record is
+    rec : series_record;
+    ev  : event_record;
+  begin
+    rec.φ1 := φ1;
+    rec.φ2 := φ2;
+    rec.num_ev := num_ev;
+    rec.num_vhpp := 0;
+    rec.num_vhpm := 0;
+    rec.num_vhmp := 0;
+    rec.num_vhmm := 0;
+    rec.num_hvpp := 0;
+    rec.num_hvpm := 0;
+    rec.num_hvmp := 0;
+    rec.num_hvmm := 0;
+    for i in 1 .. num_ev loop
+      ev := ev_sim (φ1, φ2);
+      case ev.orientations(1) is
+        when '⇕' =>
+          assert (ev.orientations(2) = '⇔');
+          case ev.detections(1) is
+            when '⊕' =>
+              case ev.detections(2) is
+                when '⊕' =>
+                  rec.num_vhpp := @ + 1;
+                when '⊖' =>
+                  rec.num_vhpm := @ + 1;
+              end case;
+            when '⊖' =>
+              case ev.detections(2) is
+                when '⊕' =>
+                  rec.num_vhmp := @ + 1;
+                when '⊖' =>
+                  rec.num_vhmm := @ + 1;
+              end case;
+          end case;
+        when '⇔' =>
+          assert (ev.orientations(2) = '⇕');
+          case ev.detections(1) is
+            when '⊕' =>
+              case ev.detections(2) is
+                when '⊕' =>
+                  rec.num_hvpp := @ + 1;
+                when '⊖' =>
+                  rec.num_hvpm := @ + 1;
+              end case;
+            when '⊖' =>
+              case ev.detections(2) is
+                when '⊕' =>
+                  rec.num_hvmp := @ + 1;
+                when '⊖' =>
+                  rec.num_hvmm := @ + 1;
+              end case;
+          end case;
+      end case;
+    end loop;
+    return rec;
+  end simulate_event_series;
 
 begin
   null;
