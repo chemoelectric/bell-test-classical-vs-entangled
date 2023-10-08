@@ -296,7 +296,8 @@ procedure bell_test_classical_vs_entangled is
     sinφ1_φ2 := (sinφ1_sign * cosφ2_sign * sqrt (sin2_cos2)) -
                    (cosφ1_sign * sinφ2_sign * sqrt (cos2_sin2));
 
-    -- Return -(cos²(φ1-φ2)-sin²(φ1-φ2)) = -cos(2(φ1-φ2)).
+    -- Return the estimate of -(cos²(φ1-φ2)-sin²(φ1-φ2)) =
+    -- -cos(2(φ1-φ2)).
     return -((cosφ1_φ2 ** 2) - (sinφ1_φ2 ** 2));
   end measure_correlation_coefficient;
 
