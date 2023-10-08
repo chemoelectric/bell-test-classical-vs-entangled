@@ -142,6 +142,12 @@ procedure bell_test_classical_vs_entangled is
 
   function simulate_event_entangled (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
+-------------------- D’OH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+--------------------
+-------------------- OF COURSE THIS IS WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+---------------------
+-------------------- FIXME: I HAVE TO DO A CARTESIAN PRODUCT
+-------------------- 
   return event_record is
     ev : event_record;
   begin
