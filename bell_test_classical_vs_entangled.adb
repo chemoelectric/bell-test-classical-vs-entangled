@@ -26,6 +26,17 @@
 
 ----------------------------------------------------------------------
 
+-- Simulation of both a classical model and an ‘entangled’ model of
+-- a two-channel Bell test experiment with photons and polarizing
+-- beam splitters.
+--
+-- Author: Barry Schwartz
+-- Date completed: 9 October 2023
+-- Revision history: See the public repository at
+--   https://github.com/chemoelectric/bell-test-classical-vs-entangled
+
+----------------------------------------------------------------------
+
 pragma ada_2022;
 pragma wide_character_encoding (utf8);
 pragma assertion_policy (check);
@@ -221,14 +232,7 @@ procedure bell_test_classical_vs_entangled is
     -- think it ought to be considered a bona fide symptom of cerebral
     -- dysfunction, usually induced by a university education. Current
     -- education in quantum mechanics literally breaks a person’s
-    -- brain, although hopefully not irreparably in too many cases.
-    --
-    -- Of course it is possible some of the folk involved have been
-    -- swindlers, taking advantage of the others. Look at how cults
-    -- and similar schemes have sometimes operated, to see what I
-    -- mean. Many dollars have been diverted to ‘entanglement’ that
-    -- obviously should have gone elsewhere, given that there is NO
-    -- SUCH THING as ‘entanglement’.)
+    -- brain, although hopefully not irreparably in too many cases.)
     --
 
     ev         : event_record;
@@ -448,10 +452,10 @@ procedure bell_test_classical_vs_entangled is
   coef_entangled : scalar;
   probs          : outcome_probabilities_record;
 
-  what_column      : constant positive_count := 3;
-  nominal_column   : constant positive_count := 25;
-  classical_column : constant positive_count := 45;
-  entangled_column : constant positive_count := 65;
+  what_column      : constant positive_count := 4;
+  nominal_column   : constant positive_count := 26;
+  classical_column : constant positive_count := 39;
+  entangled_column : constant positive_count := 52;
 
 begin
   if argument_count /= 3 then
@@ -498,34 +502,82 @@ begin
 
     set_col (to => what_column); put ("⇕ ⇔ ⊕ ⊕ frequency");
     set_col (to => nominal_column); put (probs.vhpp, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_vhpp) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_vhpp) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇕ ⇔ ⊕ ⊖ frequency");
     set_col (to => nominal_column); put (probs.vhpm, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_vhpm) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_vhpm) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇕ ⇔ ⊖ ⊕ frequency");
     set_col (to => nominal_column); put (probs.vhmp, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_vhmp) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_vhmp) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇕ ⇔ ⊖ ⊖ frequency");
     set_col (to => nominal_column); put (probs.vhmm, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_vhmm) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_vhmm) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇔ ⇕ ⊕ ⊕ frequency");
     set_col (to => nominal_column); put (probs.hvpp, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_hvpp) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_hvpp) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇔ ⇕ ⊕ ⊖ frequency");
     set_col (to => nominal_column); put (probs.hvpm, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_hvpm) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_hvpm) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇔ ⇕ ⊖ ⊕ frequency");
     set_col (to => nominal_column); put (probs.hvmp, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_hvmp) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_hvmp) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("⇔ ⇕ ⊖ ⊖ frequency");
     set_col (to => nominal_column); put (probs.hvmm, 2, 5, 0);
+    set_col (to => classical_column);
+    put (scalar (rec_classical.num_hvmm) / scalar (rec_classical.num_ev),
+         2, 5, 0);
+    set_col (to => entangled_column);
+    put (scalar (rec_entangled.num_hvmm) / scalar (rec_entangled.num_ev),
+         2, 5, 0);
     new_line;
 
     set_col (to => what_column); put ("correlation coef.");
