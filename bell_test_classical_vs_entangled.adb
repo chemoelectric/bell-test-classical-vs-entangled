@@ -169,6 +169,25 @@ procedure bell_test_classical_vs_entangled is
     --   determines which of the possible outcomes is the one that
     --   will actually be.
     --
+    -- (That this will produce the same statistics as the ‘classical’
+    -- simulation ought to be obvious. ‘Entanglement’ is physicists
+    -- imagining the probabilities of outcomes as the actual physical
+    -- objects traveling through space, and in this regard is an
+    -- example of what E. T. Jaynes called the ‘Mind Projection
+    -- Fallacy’. Jaynes considered this fallacy an arrogance, but I
+    -- think it ought to be considered a bona fide symptom of cerebral
+    -- dysfunction, usually induced by a university education. Current
+    -- education in quantum mechanics literally breaks a person’s
+    -- brain, although hopefully not irreparably in too many cases.
+    --
+    -- Of course it is possible some of the folk involved have been
+    -- swindlers, taking advantage of the others. Look at how cults
+    -- and similar schemes have sometimes operated, to see what I
+    -- mean. Many research dollars have been diverted to
+    -- ‘entanglement’ nowadays that obviously should have gone
+    -- elsewhere, given that there is no such thing as
+    -- ‘entanglement’.)
+    --
 
     ev               : event_record;
 
