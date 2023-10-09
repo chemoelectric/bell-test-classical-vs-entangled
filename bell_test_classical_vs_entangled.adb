@@ -183,9 +183,9 @@ procedure bell_test_classical_vs_entangled is
     -- Of course it is possible some of the folk involved have been
     -- swindlers, taking advantage of the others. Look at how cults
     -- and similar schemes have sometimes operated, to see what I
-    -- mean. Many research dollars have been diverted to
-    -- ‘entanglement’ that obviously should have gone elsewhere, given
-    -- that there is no such thing as ‘entanglement’.)
+    -- mean. Many dollars have been diverted to ‘entanglement’ that
+    -- obviously should have gone elsewhere, given that there is NO
+    -- SUCH THING as ‘entanglement’.)
     --
 
     ev               : event_record;
@@ -221,14 +221,14 @@ procedure bell_test_classical_vs_entangled is
     sin2φ1cos2φ2 := sin2φ1 * cos2φ2;
     sin2φ1sin2φ2 := sin2φ1 * sin2φ2;
 
-    probability_vhpp := sin2φ1cos2φ2;
-    probability_vhpm := sin2φ1sin2φ2;
-    probability_vhmp := cos2φ1cos2φ2;
-    probability_vhmm := cos2φ1sin2φ2;
-    probability_hvpp := cos2φ1sin2φ2;
-    probability_hvpm := cos2φ1cos2φ2;
-    probability_hvmp := sin2φ1sin2φ2;
-    probability_hvmm := sin2φ1cos2φ2;
+    probability_vhpp := 0.5 * sin2φ1cos2φ2;
+    probability_vhpm := 0.5 * sin2φ1sin2φ2;
+    probability_vhmp := 0.5 * cos2φ1cos2φ2;
+    probability_vhmm := 0.5 * cos2φ1sin2φ2;
+    probability_hvpp := 0.5 * cos2φ1sin2φ2;
+    probability_hvpm := 0.5 * cos2φ1cos2φ2;
+    probability_hvmp := 0.5 * sin2φ1sin2φ2;
+    probability_hvmm := 0.5 * sin2φ1cos2φ2;
 
     cumulative(1) := probability_vhpp;
     cumulative(2) := cumulative(1) + probability_vhpm;
@@ -356,6 +356,20 @@ procedure bell_test_classical_vs_entangled is
 
   function measure_correlation_coefficient (rec : series_record)
   return scalar is
+
+    --
+    -- This function computes an estimate of the correlation
+    -- coefficient -cos(2(φ1-φ2)) from experimental data, for
+    -- comparison with the nominal value and with other sets of
+    -- experimental data.
+    --
+    -- Unlike ‘inequalities’, the correlation coefficient is an
+    -- unimpeachable measure of correlation. If the measured values
+    -- are reliably close to the nominal values, and the entire data
+    -- set is employed (NO POST-SELECTION!) then the correlations ARE
+    -- there.
+    --
+
     freq_vhpp  : scalar;
     freq_vhpm  : scalar;
     freq_vhmp  : scalar;
