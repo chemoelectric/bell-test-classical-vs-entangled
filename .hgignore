@@ -1,0 +1,8 @@
+syntax: regexp
+
+^bell_test_classical_vs_entangled$
+
+~$
+\.orig$
+\.o$
+\.ali$
