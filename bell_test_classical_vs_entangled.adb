@@ -114,21 +114,20 @@ procedure bell_test_classical_vs_entangled is
       detections   : plus_minus_pair;
     end record;
 
-  function split_beam (φ : polarizing_beam_splitter;
-                       σ : orientation)
-  return plus_minus is
-  begin
-    return
-      (case σ is
-         when '⇕' =>
-           (if uniform_scalar < sin (φ) ** 2 then '⊕' else '⊖'),
-         when '⇔' =>
-           (if uniform_scalar < cos (φ) ** 2 then '⊕' else '⊖'));
-  end split_beam;
-
   function simulate_event_classical (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
   return event_record is
+    function split_beam (φ : polarizing_beam_splitter;
+                         σ : orientation)
+    return plus_minus is
+    begin
+      return
+        (case σ is
+           when '⇕' =>
+             (if uniform_scalar < sin (φ) ** 2 then '⊕' else '⊖'),
+           when '⇔' =>
+             (if uniform_scalar < cos (φ) ** 2 then '⊕' else '⊖'));
+    end split_beam;
     ev : event_record;
   begin
     ev.orientations := (if uniform_scalar < 0.5 then
@@ -142,27 +141,87 @@ procedure bell_test_classical_vs_entangled is
 
   function simulate_event_entangled (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
--------------------- D’OH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
---------------------
--------------------- OF COURSE THIS IS WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
----------------------
--------------------- FIXME: I HAVE TO DO A CARTESIAN PRODUCT
--------------------- 
   return event_record is
-    ev : event_record;
+    ev               : event_record;
+
+    cos2φ1, cos2φ2   : scalar;
+    sin2φ1, sin2φ2   : scalar;
+
+    cos2φ1cos2φ2     : scalar;
+    cos2φ1sin2φ2     : scalar;
+    sin2φ1cos2φ2     : scalar;
+    sin2φ1sin2φ2     : scalar;
+
+    probability_vhpp : scalar;  -- vertical, horizontal, plus, minus
+    probability_vhpm : scalar;
+    probability_vhmp : scalar;
+    probability_vhmm : scalar;
+    probability_hvpp : scalar;
+    probability_hvpm : scalar;
+    probability_hvmp : scalar;
+    probability_hvmm : scalar;
+
+    cumulative       : array (1 .. 8) of scalar;
+
+    r                : scalar;
   begin
-    ev.orientations(1) := (if uniform_scalar < 0.5 then '⇕' else '⇔');
-    ev.detections(1) := split_beam (φ1, ev.orientations(1));
-    case ev.orientations(1) is
-      when '⇕' =>
-        ev.orientations(2) := '⇔';
-        ev.detections(2) :=
-          (if uniform_scalar < cos (φ2) ** 2 then '⊕' else '⊖');
-      when '⇔' =>
-        ev.orientations(2) := '⇕';
-        ev.detections(2) :=
-          (if uniform_scalar < sin (φ2) ** 2 then '⊕' else '⊖');
-    end case;
+    cos2φ1 := cos (φ1) ** 2;
+    cos2φ2 := cos (φ2) ** 2;
+    sin2φ1 := sin (φ1) ** 2;
+    sin2φ2 := sin (φ2) ** 2;
+
+    cos2φ1cos2φ2 := cos2φ1 * cos2φ2;
+    cos2φ1sin2φ2 := cos2φ1 * sin2φ2;
+    sin2φ1cos2φ2 := sin2φ1 * cos2φ2;
+    sin2φ1sin2φ2 := sin2φ1 * sin2φ2;
+
+    probability_vhpp := sin2φ1cos2φ2;
+    probability_vhpm := sin2φ1sin2φ2;
+    probability_vhmp := cos2φ1cos2φ2;
+    probability_vhmm := cos2φ1sin2φ2;
+    probability_hvpp := cos2φ1sin2φ2;
+    probability_hvpm := cos2φ1cos2φ2;
+    probability_hvmp := sin2φ1sin2φ2;
+    probability_hvmm := sin2φ1cos2φ2;
+
+    cumulative(1) := probability_vhpp;
+    cumulative(2) := cumulative(1) + probability_vhpm;
+    cumulative(3) := cumulative(2) + probability_vhmp;
+    cumulative(4) := cumulative(3) + probability_vhmm;
+    cumulative(5) := cumulative(4) + probability_hvpp;
+    cumulative(6) := cumulative(5) + probability_hvpm;
+    cumulative(7) := cumulative(6) + probability_hvmp;
+    cumulative(8) := cumulative(7) + probability_hvmm;
+
+    assert (abs (cumulative(8) - 1.0) < 5.0e3 * scalar'model_epsilon);
+
+    r := uniform_scalar;
+    if r < cumulative(1) then
+      ev.orientations := ('⇕', '⇔');
+      ev.detections := ('⊕', '⊕');
+    elsif r < cumulative(2) then
+      ev.orientations := ('⇕', '⇔');
+      ev.detections := ('⊕', '⊖');
+    elsif r < cumulative(3) then
+      ev.orientations := ('⇕', '⇔');
+      ev.detections := ('⊖', '⊕');
+    elsif r < cumulative(4) then
+      ev.orientations := ('⇕', '⇔');
+      ev.detections := ('⊖', '⊖');
+    elsif r < cumulative(5) then
+      ev.orientations := ('⇔', '⇕');
+      ev.detections := ('⊕', '⊕');
+    elsif r < cumulative(6) then
+      ev.orientations := ('⇔', '⇕');
+      ev.detections := ('⊕', '⊖');
+    elsif r < cumulative(7) then
+      ev.orientations := ('⇔', '⇕');
+      ev.detections := ('⊖', '⊕');
+    else
+      ev.orientations := ('⇔', '⇕');
+      ev.detections := ('⊖', '⊖');
+    end if;
+
     return ev;
   end simulate_event_entangled;
 
