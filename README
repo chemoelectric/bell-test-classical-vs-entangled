@@ -1,0 +1,121 @@
+----------------------------------------------------------------------
+
+An Ada program that simulates a two-channel Bell test polarized photon
+experiment, both classically and with ‘entanglement’.
+
+You can compile it with gcc like so:
+
+   gnatmake -f -O3 bell_test_classical_vs_entangled.adb
+
+You can run it for instance, like so:
+
+   ./bell_test_classical_vs_entangled 45 67.5 1000000
+
+Statistical data is printed out and, of course, the results are
+similar for both simulations, because there is actually
+
+    NO SUCH THING AS ‘ENTANGLEMENT’
+
+To wit:
+
+   φ1 =    45.00000°
+   φ2 =    67.50000°
+
+   number of events = 1000000
+
+                          nominal      classical    entangled
+   ⇕ ⇔ ⊕ ⊕ frequency      0.03661      0.03655      0.03687
+   ⇕ ⇔ ⊕ ⊖ frequency      0.21339      0.21419      0.21264
+   ⇕ ⇔ ⊖ ⊕ frequency      0.03661      0.03662      0.03626
+   ⇕ ⇔ ⊖ ⊖ frequency      0.21339      0.21332      0.21318
+   ⇔ ⇕ ⊕ ⊕ frequency      0.21339      0.21246      0.21378
+   ⇔ ⇕ ⊕ ⊖ frequency      0.03661      0.03672      0.03683
+   ⇔ ⇕ ⊖ ⊕ frequency      0.21339      0.21319      0.21352
+   ⇔ ⇕ ⊖ ⊖ frequency      0.03661      0.03694      0.03692
+   correlation coef.     -0.70711     -0.70933     -0.70647
+
+This program, and any like it that YOU write and run, are experimental
+evidence of that hypothesis.
+
+That physicists have not written and run such experiments is a
+dereliction of their duty as scientists, to follow scientific
+method. They have not performed observations, even simple ones such as
+this, before forming their (as it happens, false) hypotheses.
+
+There is no such thing as ‘entanglement’.
+
+----------------------------------------------------------------------
+
+This nonsense about ‘entanglement’ actually arose from the 1935 paper
+by Einstein, Podolsky, and Rosen (EPR), which argued correctly that
+quantum mechanics problems must be soluble by other means. The quantum
+physics community has ever since, at least by majority consensus,
+tried to hold a monopoly on its problems by insisting EPR were
+wrong. ‘Entanglement’ and ‘non-locality’ arose as supposed properties
+of quantum physics that distinguish it from classical physics.
+
+Let us call this monopoly grip on QM problems ‘irreducibility of
+quantum mechanics’. It is the assertion that only quantum mechanics
+can solve quantum mechanics problems problems.
+
+However, there are two points I can make that will, without
+difficulty, demolish ‘irreducibility’, at least for those of us who
+retain any respect at all for mathematics and logic.
+
+The first is something that, to me, seems odd to have been overlooked,
+which is that the assertion of ‘irreducibility’ is not about physics,
+but about mathematics. It is the assertion that a WORD PROBLEM in
+quantum mechanics can be solved only using the peculiar mathematical
+methods of quantum mechanics. This is ABSURD. For one thing, the
+problem will have isomorphic equivalents. A two-channel Bell test is
+logically equivalent to a thoroughly classical arrangement of radio
+transmitters, relays, and receivers! The fact is that, once written
+down as a word problem, any method of mathematics may be used, and it
+that method will, by logical necessity, reach exactly the same result
+as the peculiar methods invented by Pauli, Dirac, von Neumann, et
+al. This is true of ANY problem in quantum mechanics. The entire field
+of study is ‘reducible’. The only REAL advantage the peculiar methods
+ever have had were of convenience.
+
+Whenever quantum theorists (Bell, Clauser, etc.) have started
+classical calculations and reached results DIFFERENT from those of
+quantum mechanics, it is simply because they made mistakes.
+
+Which brings me to the second point, which concerns John S. Bell’s
+perverse version of probability theory, upon which ‘entanglement’ is
+based. In actual probability theory, the definition of a conditional
+probability is
+
+   P(a|b) = P(a∧b) / P(b)
+
+where a and b are propositions and a∧b is their logical conjunction.
+In Bell’s probability theory, by contrast, the definition of a
+conditional probability is
+
+   P(a|b) = P(a∧b) / P(b), but, if b has no causal influence on a,
+   then P(a|b) = P(a∧b) / P(b) = P(a)
+
+Advocates of this definition will give you longwinded justifications
+for it, but you and I retain respect for mathematics and logic and so
+understand that there is no possible justification for it. But let us
+try it out, anyway, and see what we can prove. Suppose I put a red
+ball and a white ball into a hat and mix them up. I remove one of the
+balls and set it aside. Now I look in the hat and see the red ball
+there. Let a = set aside ball is red, b = ball in hat is red.
+According to Bell’s definition of the conditional probability,
+
+   P(a|b) = P(a∧b) / P(b) = 0/(1/2) = 0
+   P(a|b) = P(a) = 1/2
+
+Therefore all numbers are both equal and unequal to each other. Also,
+division by zero is both valid and invalid. Etc.
+
+Watch for physicists to refer to this conundrum by some such name as
+‘Bell Loophole’. This is the sort of thing they do when presented with
+such evidence that they are committing scientific fraud, either
+deliberately or because they are part of a pseudoscience cult. But,
+were I a Professional Engineer, and I went into court and said, ‘Your
+Honor, the bridge fell due to a LOOPHOLE in my mathematics’, then I
+would be in big, big trouble.
+
+----------------------------------------------------------------------
