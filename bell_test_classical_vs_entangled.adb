@@ -153,6 +153,49 @@ procedure bell_test_classical_vs_entangled is
     return ev;
   end simulate_event_classical;
 
+  type outcome_probabilities_record is
+    record
+      vhpp : scalar;            -- vertical, horizontal, plus, minus
+      vhpm : scalar;
+      vhmp : scalar;
+      vhmm : scalar;
+      hvpp : scalar;
+      hvpm : scalar;
+      hvmp : scalar;
+      hvmm : scalar;
+    end record;
+
+  function outcome_probabilities (φ1 : polarizing_beam_splitter;
+                                  φ2 : polarizing_beam_splitter)
+  return outcome_probabilities_record is
+    cos2φ1, cos2φ2   : scalar;
+    sin2φ1, sin2φ2   : scalar;
+
+    cos2φ1cos2φ2     : scalar;
+    cos2φ1sin2φ2     : scalar;
+    sin2φ1cos2φ2     : scalar;
+    sin2φ1sin2φ2     : scalar;
+  begin
+    cos2φ1 := cos (φ1) ** 2;
+    cos2φ2 := cos (φ2) ** 2;
+    sin2φ1 := sin (φ1) ** 2;
+    sin2φ2 := sin (φ2) ** 2;
+
+    cos2φ1cos2φ2 := cos2φ1 * cos2φ2;
+    cos2φ1sin2φ2 := cos2φ1 * sin2φ2;
+    sin2φ1cos2φ2 := sin2φ1 * cos2φ2;
+    sin2φ1sin2φ2 := sin2φ1 * sin2φ2;
+
+    return (vhpp => 0.5 * sin2φ1cos2φ2,
+            vhpm => 0.5 * sin2φ1sin2φ2,
+            vhmp => 0.5 * cos2φ1cos2φ2,
+            vhmm => 0.5 * cos2φ1sin2φ2,
+            hvpp => 0.5 * cos2φ1sin2φ2,
+            hvpm => 0.5 * cos2φ1cos2φ2,
+            hvmp => 0.5 * sin2φ1sin2φ2,
+            hvmm => 0.5 * sin2φ1cos2φ2);
+  end outcome_probabilities;
+
   function simulate_event_entangled (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
   return event_record is
@@ -188,56 +231,21 @@ procedure bell_test_classical_vs_entangled is
     -- SUCH THING as ‘entanglement’.)
     --
 
-    ev               : event_record;
-
-    cos2φ1, cos2φ2   : scalar;
-    sin2φ1, sin2φ2   : scalar;
-
-    cos2φ1cos2φ2     : scalar;
-    cos2φ1sin2φ2     : scalar;
-    sin2φ1cos2φ2     : scalar;
-    sin2φ1sin2φ2     : scalar;
-
-    probability_vhpp : scalar;  -- vertical, horizontal, plus, minus
-    probability_vhpm : scalar;
-    probability_vhmp : scalar;
-    probability_vhmm : scalar;
-    probability_hvpp : scalar;
-    probability_hvpm : scalar;
-    probability_hvmp : scalar;
-    probability_hvmm : scalar;
-
-    cumulative       : array (1 .. 8) of scalar;
-
-    r                : scalar;
+    ev         : event_record;
+    probs      : outcome_probabilities_record;
+    cumulative : array (1 .. 8) of scalar;
+    r          : scalar;
   begin
-    cos2φ1 := cos (φ1) ** 2;
-    cos2φ2 := cos (φ2) ** 2;
-    sin2φ1 := sin (φ1) ** 2;
-    sin2φ2 := sin (φ2) ** 2;
+    probs := outcome_probabilities (φ1, φ2);
 
-    cos2φ1cos2φ2 := cos2φ1 * cos2φ2;
-    cos2φ1sin2φ2 := cos2φ1 * sin2φ2;
-    sin2φ1cos2φ2 := sin2φ1 * cos2φ2;
-    sin2φ1sin2φ2 := sin2φ1 * sin2φ2;
-
-    probability_vhpp := 0.5 * sin2φ1cos2φ2;
-    probability_vhpm := 0.5 * sin2φ1sin2φ2;
-    probability_vhmp := 0.5 * cos2φ1cos2φ2;
-    probability_vhmm := 0.5 * cos2φ1sin2φ2;
-    probability_hvpp := 0.5 * cos2φ1sin2φ2;
-    probability_hvpm := 0.5 * cos2φ1cos2φ2;
-    probability_hvmp := 0.5 * sin2φ1sin2φ2;
-    probability_hvmm := 0.5 * sin2φ1cos2φ2;
-
-    cumulative(1) := probability_vhpp;
-    cumulative(2) := cumulative(1) + probability_vhpm;
-    cumulative(3) := cumulative(2) + probability_vhmp;
-    cumulative(4) := cumulative(3) + probability_vhmm;
-    cumulative(5) := cumulative(4) + probability_hvpp;
-    cumulative(6) := cumulative(5) + probability_hvpm;
-    cumulative(7) := cumulative(6) + probability_hvmp;
-    cumulative(8) := cumulative(7) + probability_hvmm;
+    cumulative(1) := probs.vhpp;
+    cumulative(2) := cumulative(1) + probs.vhpm;
+    cumulative(3) := cumulative(2) + probs.vhmp;
+    cumulative(4) := cumulative(3) + probs.vhmm;
+    cumulative(5) := cumulative(4) + probs.hvpp;
+    cumulative(6) := cumulative(5) + probs.hvpm;
+    cumulative(7) := cumulative(6) + probs.hvmp;
+    cumulative(8) := cumulative(7) + probs.hvmm;
 
     assert (abs (cumulative(8) - 1.0) < 5.0e3 * scalar'model_epsilon);
 
@@ -431,14 +439,16 @@ procedure bell_test_classical_vs_entangled is
     return -((cosφ1_φ2 ** 2) - (sinφ1_φ2 ** 2));
   end measure_correlation_coefficient;
 
+  φ1_deg, φ2_deg : scalar;
   φ1, φ2         : scalar;
   num_ev         : positive;
   rec_classical  : series_record;
   rec_entangled  : series_record;
   coef_classical : scalar;
   coef_entangled : scalar;
+  probs          : outcome_probabilities_record;
 
-  what_column      : constant positive_count := 5;
+  what_column      : constant positive_count := 3;
   nominal_column   : constant positive_count := 25;
   classical_column : constant positive_count := 45;
   entangled_column : constant positive_count := 65;
@@ -451,8 +461,11 @@ begin
     new_line;
     set_exit_status (1);
   else
-    φ1 := scalar'value (argument(1)) * (π / 180.0);
-    φ2 := scalar'value (argument(2)) * (π / 180.0);
+  
+    φ1_deg := scalar'value (argument(1));
+    φ2_deg := scalar'value (argument(2));
+    φ1 := φ1_deg * (π / 180.0);
+    φ2 := φ2_deg * (π / 180.0);
     num_ev := positive'value (argument(3));
     rec_classical :=
       simulate_event_series (simulate_event_classical'access,
@@ -462,12 +475,60 @@ begin
                              φ1, φ2, num_ev);
     coef_classical := measure_correlation_coefficient (rec_classical);
     coef_entangled := measure_correlation_coefficient (rec_entangled);
+    probs := outcome_probabilities (φ1, φ2);
 
-    set_col (to => nominal_column); put ("nominal");
-    set_col (to => classical_column); put ("classical");
-    set_col (to => entangled_column); put ("entangled"); new_line;
+    new_line;
 
-    set_col (to => what_column); put ("correlation coef");
+    set_col (to => what_column);
+    put ("φ1 = "); put (φ1_deg, 5, 5, 0); put ("°"); new_line;
+    set_col (to => what_column);
+    put ("φ2 = "); put (φ2_deg, 5, 5, 0); put ("°"); new_line;
+
+    new_line;
+
+    set_col (to => what_column);
+    put ("number of events ="); tio.put (num_ev'image); new_line;
+
+    new_line;
+
+    set_col (to => nominal_column); put (" nominal");
+    set_col (to => classical_column); put (" classical");
+    set_col (to => entangled_column); put (" entangled");
+    new_line;
+
+    set_col (to => what_column); put ("⇕ ⇔ ⊕ ⊕ frequency");
+    set_col (to => nominal_column); put (probs.vhpp, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇕ ⇔ ⊕ ⊖ frequency");
+    set_col (to => nominal_column); put (probs.vhpm, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇕ ⇔ ⊖ ⊕ frequency");
+    set_col (to => nominal_column); put (probs.vhmp, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇕ ⇔ ⊖ ⊖ frequency");
+    set_col (to => nominal_column); put (probs.vhmm, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇔ ⇕ ⊕ ⊕ frequency");
+    set_col (to => nominal_column); put (probs.hvpp, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇔ ⇕ ⊕ ⊖ frequency");
+    set_col (to => nominal_column); put (probs.hvpm, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇔ ⇕ ⊖ ⊕ frequency");
+    set_col (to => nominal_column); put (probs.hvmp, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("⇔ ⇕ ⊖ ⊖ frequency");
+    set_col (to => nominal_column); put (probs.hvmm, 2, 5, 0);
+    new_line;
+
+    set_col (to => what_column); put ("correlation coef.");
     set_col (to => nominal_column);
     put (-cos (2.0 * (φ1 - φ2)), 2, 5, 0);
     set_col (to => classical_column); put (coef_classical, 2, 5, 0);
