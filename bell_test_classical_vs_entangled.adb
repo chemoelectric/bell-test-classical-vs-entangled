@@ -28,6 +28,7 @@
 
 pragma ada_2022;
 pragma wide_character_encoding (utf8);
+pragma assertion_policy (check);
 
 with ada.assertions;
 with ada.text_io;
@@ -117,6 +118,19 @@ procedure bell_test_classical_vs_entangled is
   function simulate_event_classical (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
   return event_record is
+
+    --
+    -- The ‘classical’ simulation goes as follows:
+    --
+    -- * A pair of perpendicularly polarized photons springs into
+    --   existence.
+    --
+    -- * Each photon goes through a polarizing beam splitter and is
+    --   directed towards its respective ⊕ photodetector or ⊖
+    --   photodetector. The beam splitter obeys the Law of Malus (if
+    --   we regard light intensity as a statistical phenomenon).
+    --
+
     function split_beam (φ : polarizing_beam_splitter;
                          σ : orientation)
     return plus_minus is
@@ -142,6 +156,20 @@ procedure bell_test_classical_vs_entangled is
   function simulate_event_entangled (φ1 : polarizing_beam_splitter;
                                      φ2 : polarizing_beam_splitter)
   return event_record is
+
+    --
+    -- The ‘entangled’ simulation goes as follows:
+    --
+    -- * The cumulative probability distribution of the cartesian
+    --   product of possible outcomes is written down.
+    --
+    -- * An number is picked haphazardly from the interval [0,1].
+    --
+    -- * That number, along with the cumulative distribution,
+    --   determines which of the possible outcomes is the one that
+    --   will actually be.
+    --
+
     ev               : event_record;
 
     cos2φ1, cos2φ2   : scalar;
