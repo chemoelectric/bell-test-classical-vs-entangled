@@ -438,6 +438,11 @@ procedure bell_test_classical_vs_entangled is
   coef_classical : scalar;
   coef_entangled : scalar;
 
+  what_column      : constant positive_count := 5;
+  nominal_column   : constant positive_count := 25;
+  classical_column : constant positive_count := 45;
+  entangled_column : constant positive_count := 65;
+
 begin
   if argument_count /= 3 then
     put ("Usage: ");
@@ -457,8 +462,17 @@ begin
                              φ1, φ2, num_ev);
     coef_classical := measure_correlation_coefficient (rec_classical);
     coef_entangled := measure_correlation_coefficient (rec_entangled);
-    put (coef_classical, 2, 5, 0); new_line;
-    put (coef_entangled, 2, 5, 0); new_line;
+
+    set_col (to => nominal_column); put ("nominal");
+    set_col (to => classical_column); put ("classical");
+    set_col (to => entangled_column); put ("entangled"); new_line;
+
+    set_col (to => what_column); put ("correlation coef");
+    set_col (to => nominal_column);
+    put (-cos (2.0 * (φ1 - φ2)), 2, 5, 0);
+    set_col (to => classical_column); put (coef_classical, 2, 5, 0);
+    set_col (to => entangled_column); put (coef_entangled, 2, 5, 0);
+    new_line;
   end if;
 end bell_test_classical_vs_entangled;
 
