@@ -184,9 +184,8 @@ procedure bell_test_classical_vs_entangled is
     -- swindlers, taking advantage of the others. Look at how cults
     -- and similar schemes have sometimes operated, to see what I
     -- mean. Many research dollars have been diverted to
-    -- ‘entanglement’ nowadays that obviously should have gone
-    -- elsewhere, given that there is no such thing as
-    -- ‘entanglement’.)
+    -- ‘entanglement’ that obviously should have gone elsewhere, given
+    -- that there is no such thing as ‘entanglement’.)
     --
 
     ev               : event_record;
