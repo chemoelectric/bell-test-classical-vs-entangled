@@ -215,7 +215,8 @@ procedure bell_test_classical_vs_entangled is
     -- The ‘entangled’ simulation goes as follows:
     --
     -- * The cumulative probability distribution of the cartesian
-    --   product of (⇕, ⇔, ⊕, ⊖) is written down.
+    --   product of ({(⇕, ⇔), (⇔, ⇕)}, {⊕, ⊖}, {⊕, ⊖}) is written
+    --   down.
     --
     -- * An number is picked haphazardly from the interval [0,1].
     --
