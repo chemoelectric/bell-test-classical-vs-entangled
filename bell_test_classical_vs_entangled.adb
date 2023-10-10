@@ -153,6 +153,7 @@ procedure bell_test_classical_vs_entangled is
            when '⇔' =>
              (if uniform_scalar < cos (φ) ** 2 then '⊕' else '⊖'));
     end split_beam;
+
     ev : event_record;
   begin
     ev.orientations := (if uniform_scalar < 0.5 then
