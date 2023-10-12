@@ -219,7 +219,7 @@ procedure bell_test_classical_vs_entangled is
     --   product of ({(⇕, ⇔), (⇔, ⇕)}, {⊕, ⊖}, {⊕, ⊖}) is written
     --   down.
     --
-    -- * An number is picked haphazardly from the interval [0,1].
+    -- * A number is picked haphazardly from the interval [0,1].
     --
     -- * That number, along with the cumulative distribution,
     --   determines which of the possible outcomes is the one that
