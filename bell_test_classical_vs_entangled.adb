@@ -225,16 +225,31 @@ procedure bell_test_classical_vs_entangled is
     --   determines which of the possible outcomes is the one that
     --   will actually be.
     --
-    -- (That this will produce the same statistics as the ‘classical’
-    -- simulation ought to be obvious. ‘Entanglement’ is physicists
-    -- imagining the probabilities of outcomes as the actual physical
-    -- objects traveling through space, and in this regard is an
-    -- example of what E. T. Jaynes called the ‘Mind Projection
-    -- Fallacy’. Jaynes considered this fallacy an arrogance, but I
-    -- think it ought to be considered a bona fide symptom of cerebral
-    -- dysfunction, usually induced by a university education. Current
-    -- education in quantum mechanics literally breaks a person’s
-    -- brain, although hopefully not irreparably in too many cases.)
+    -- The justification for calling this a simulation of
+    -- ‘entanglement’ is as follows:
+    --
+    -- * There can be no question that the experimental arrangement
+    --   requires the particular cumulative probability
+    --   distribution. For otherwise mathematics would be
+    --   inconsistent.
+    --
+    -- * There can be no question that ‘entanglement’ requires that
+    --   the outcome be determined at the very end of an event, when
+    --   the ‘measurements’ are made.
+    --
+    -- Therefore this is a valid simulation of ‘entanglement’.
+    --
+    -- (That this simulation will produce the same statistics as the
+    -- ‘classical’ simulation ought to be obvious. So-called
+    -- ‘entanglement’ is actually physicists imagining the
+    -- probabilities of outcomes as if THEY were the physical objects
+    -- traveling through space, and in this regard is an example of
+    -- what E. T. Jaynes called the ‘Mind Projection Fallacy’. Jaynes
+    -- considered this fallacy an arrogance, but I think it ought to
+    -- be considered a bona fide symptom of cerebral dysfunction,
+    -- usually induced by a university education. Current education in
+    -- quantum mechanics literally breaks a person’s brain, although
+    -- hopefully not irreparably in too many cases.)
     --
 
     ev         : event_record;
