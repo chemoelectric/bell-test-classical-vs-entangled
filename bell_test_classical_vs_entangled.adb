@@ -139,7 +139,8 @@ procedure bell_test_classical_vs_entangled is
     -- * Each photon goes through a polarizing beam splitter and is
     --   directed towards its respective ⊕ photodetector or ⊖
     --   photodetector. The beam splitter obeys the Law of Malus (if
-    --   we regard light intensity as a statistical phenomenon).
+    --   we regard the Law of Malus in terms of effective area
+    --   presented by the polarizer to light of a given polarization).
     --
 
     function split_beam (φ : polarizing_beam_splitter;
